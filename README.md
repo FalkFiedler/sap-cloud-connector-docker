@@ -58,7 +58,13 @@ The Dockerfile is based on [https://github.com/PaxSchweiz/SAPHCPConnector/blob/m
         ```sh
         docker run -P -h mysapcc --name sapcc -d sapcc:2.11.1
         ```
+	 - Mount a host volume to store the SAP Cloud Connector configuration
+		To make the configuration of the SCC resilient you have to mount filesystems from the host server. Resilient means if you restart the docker container, the docker volumes will removed by docker and the configuration is lost. You keep the configuration by store the data in mounted host volumes.
 
+		```bash
+		hostPath=/var/lib/docker/volumes/scc_config_volume/sapcc; dockerPath=/opt/sap/scc/;docker run --rm -p 8443:8443 -h mysapcc -v "${hostPath}/scc_config:${dockerPath}/scc_config:rw" -v "${hostPath}/config:${dockerPath}/config:rw" -v "${hostPath}/log:${dockerPath}/log:rw" --name sapcc -d sapcc:2.11.1
+		```
+		
 1. Starting/Stopping the container
 
     - **Starting:** `docker start sapcc`
